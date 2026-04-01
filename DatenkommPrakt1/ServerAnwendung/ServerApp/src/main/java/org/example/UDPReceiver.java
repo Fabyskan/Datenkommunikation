@@ -6,47 +6,47 @@ import java.net.InetAddress;
 
 public class UDPReceiver {
 
-    public static final byte CONTROL_0 = 0x00;
-    public static final byte CONTROL_1 = (byte) 0xFF;
+    private static final int SERVER_PORT = 1337;
+    private static final int CLIENT_PORT = 1338;
+    private static final int TIMEOUT = 10000;
 
     public static void receiveSocket() throws IOException {
         Status state = Status.WAIT_FOR_0;
         int dataPointer = 0;
         String answerString = "JumpsOverTheLazyFox";
 
-        try (var socket = new DatagramSocket(1337)) {
+        try (var socket = new DatagramSocket(SERVER_PORT)) {
+            final var receivePacket = new DatagramPacket(new byte[2], 2);
+            final var sendPacket = new DatagramPacket(new byte[2], 2, InetAddress.getByName("localhost"), CLIENT_PORT);
+            socket.setSoTimeout(TIMEOUT);
             while (true) {
-                socket.setSoTimeout(20000);
-                final var receivePacket = new DatagramPacket(new byte[2], 2);
-                final var sendPacket = new DatagramPacket(new byte[2], 2, InetAddress.getByName("localhost"), 1338);
                 try {
                     socket.receive(receivePacket);
                     byte receivedData = receivePacket.getData()[0];
                     byte receivedControl = receivePacket.getData()[1];
-                    if (state == Status.WAIT_FOR_0 && receivedControl == CONTROL_0) {
-                        IO.println((char)receivedData + "|" +  (receivedControl == CONTROL_0 ? "0" : "1"));
+                    if (receivedControl == Status.WAIT_FOR_0.controlByte) {
+                        IO.println((char)receivedData + "|" +  (receivedControl == Status.WAIT_FOR_0.controlByte ? "0" : "1"));
                         if(dataPointer < answerString.length()) {
-                            sendPacket.getData()[0] = (byte) answerString.charAt(dataPointer++);
-                            sendPacket.getData()[1] = CONTROL_0;
-                            socket.send(sendPacket);
+                            sendNext(socket, sendPacket, answerString.charAt(dataPointer++), Status.WAIT_FOR_0.controlByte);
                         }
                         state = Status.WAIT_FOR_1;
-                    } else if (state == Status.WAIT_FOR_1 && receivedControl == CONTROL_1) {
-                        IO.println((char)receivedData + "|" +  (receivedControl == CONTROL_0 ? "0" : "1"));
+                    } else if (receivedControl == Status.WAIT_FOR_1.controlByte) {
+                        IO.println((char)receivedData + "|" +  (receivedControl == Status.WAIT_FOR_0.controlByte ? "0" : "1"));
                         if(dataPointer < answerString.length()) {
-                            sendPacket.getData()[0] = (byte) answerString.charAt(dataPointer++);
-                            sendPacket.getData()[1] = CONTROL_1;
-                            socket.send(sendPacket);
+                            sendNext(socket, sendPacket, answerString.charAt(dataPointer++), Status.WAIT_FOR_1.controlByte);
                         }
                         state = Status.WAIT_FOR_0;
-                    } else {
-                        continue;
                     }
                 } catch (IOException e) {
                     IO.println("Timeout oder Abbruch");
                 }
             }
         }
+    }
+    private static void sendNext(DatagramSocket socket, DatagramPacket packet, char character, byte control) throws IOException {
+        packet.getData()[0] = (byte) character;
+        packet.getData()[1] = control;
+        socket.send(packet);
     }
 }
 //ss -lun
