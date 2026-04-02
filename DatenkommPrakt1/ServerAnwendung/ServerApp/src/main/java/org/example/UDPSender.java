@@ -17,20 +17,25 @@ public class UDPSender {
         String requestString = "TheQuickBrownRabbit";
 
         try (var socket = new DatagramSocket(CLIENT_PORT)) {
+            socket.setSoTimeout(TIMEOUT);
+
             final var receivePacket = new DatagramPacket(new byte[2], 2);
             final var sendPacket = new DatagramPacket(new byte[2], 2, InetAddress.getByName("localhost"), SERVER_PORT);
-            socket.setSoTimeout(TIMEOUT);
+
             while (!finished) {
                 try {
                     if (state == Status.INIT_STAT) {
                         sendNext(socket, sendPacket, requestString.charAt(dataPointer++), Status.WAIT_FOR_0.controlByte);
                         state = Status.WAIT_FOR_0;
                     }
+
                     socket.receive(receivePacket);
                     byte receivedData = receivePacket.getData()[0];
                     byte receivedControl = receivePacket.getData()[1];
+
                     if (state == Status.WAIT_FOR_0 && receivedControl == Status.WAIT_FOR_0.controlByte) {
-                        IO.println((char)receivedData + "|" +  (receivedControl == Status.WAIT_FOR_0.controlByte ? "0" : "1"));
+                        IO.println((char) receivedData + "|" +  (receivedControl == Status.WAIT_FOR_0.controlByte ? "0" : "1"));
+
                         if(dataPointer < requestString.length()) {
                             sendNext(socket, sendPacket, requestString.charAt(dataPointer++), Status.WAIT_FOR_1.controlByte);
                             state = Status.WAIT_FOR_1;
