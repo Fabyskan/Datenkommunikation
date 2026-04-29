@@ -7,7 +7,7 @@ import java.net.InetAddress;
 public class UDPReceiver {
 
     private static final int SERVER_PORT = 1337;
-    private static final int CLIENT_PORT = 1338;
+    private static final int CLIENT_PORT = 3888;
     private static final int TIMEOUT = 10000;
 
     public static void receiveSocket() throws IOException {

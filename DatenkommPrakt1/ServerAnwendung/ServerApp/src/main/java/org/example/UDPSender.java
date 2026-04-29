@@ -6,7 +6,7 @@ import java.net.InetAddress;
 
 public class UDPSender {
 
-    private static final int SERVER_PORT = 1337;
+    private static final int SERVER_PORT = 3887;
     private static final int CLIENT_PORT = 1338;
     private static final int TIMEOUT = 10000;
 
