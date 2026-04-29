@@ -11,7 +11,7 @@ public class ProxMoxMaus {
     private static final int PROXY_FOR_SERVER_PORT = 3887;
     private static final int PROXY_FOR_CLIENT_PORT = 3888;
 
-    public static void startProxy() throws IOException {
+    public static void startProxy() throws Exception {
         DatagramSocket socketFromClient = new DatagramSocket(PROXY_FOR_SERVER_PORT);
         DatagramSocket socketFromServer = new DatagramSocket(PROXY_FOR_CLIENT_PORT);
 
@@ -20,11 +20,11 @@ public class ProxMoxMaus {
             weiterschicken(socketFromClient, localhost, SERVER_PORT, "Client -> Server");
         });
 
-        Thread.startVirtualThread(() -> {
+        var blub = Thread.startVirtualThread(() -> {
             weiterschicken(socketFromServer, localhost, CLIENT_PORT, "Server -> Client");
         });
-
-        System.in.read();
+        blub.join();
+        //System.in.read();
     }
 
     private static void weiterschicken(DatagramSocket listenSocket, InetAddress targetAddr, int targetPort, String direction) {
