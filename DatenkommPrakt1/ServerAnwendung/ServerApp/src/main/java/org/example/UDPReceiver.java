@@ -11,7 +11,8 @@ public class UDPReceiver {
     private static final int TIMEOUT = 10000;
 
     public static void receiveSocket() throws IOException {
-        Status state = Status.WAIT_FOR_0;
+        byte lastProcessedControl = (byte) 0x01;
+        //Status state = Status.WAIT_FOR_0;
         int dataPointer = 0;
         String answerString = "JumpsOverTheLazyFox";
 
@@ -24,21 +25,31 @@ public class UDPReceiver {
                     socket.receive(receivePacket);
                     byte receivedData = receivePacket.getData()[0];
                     byte receivedControl = receivePacket.getData()[1];
-                    if (receivedControl == Status.WAIT_FOR_0.controlByte) {
-                        IO.println((char)receivedData + "|" +  (receivedControl == Status.WAIT_FOR_0.controlByte ? "0" : "1"));
+
+                    if (receivedControl != lastProcessedControl) {
+                        String bitDisplay = (receivedControl == Status.WAIT_FOR_0.controlByte) ? "0" : "1";
+                        IO.println((char) receivedData + "|" + bitDisplay);
+
                         if(dataPointer < answerString.length()) {
-                            sendNext(socket, sendPacket, answerString.charAt(dataPointer++), Status.WAIT_FOR_0.controlByte);
+                            sendNext(socket, sendPacket, answerString.charAt(dataPointer++), receivedControl);
+                        } else {
+                            sendNext(socket, sendPacket, (char) 0, receivedControl);
                         }
-                        state = Status.WAIT_FOR_1;
-                    } else if (receivedControl == Status.WAIT_FOR_1.controlByte) {
-                        IO.println((char)receivedData + "|" +  (receivedControl == Status.WAIT_FOR_0.controlByte ? "0" : "1"));
-                        if(dataPointer < answerString.length()) {
-                            sendNext(socket, sendPacket, answerString.charAt(dataPointer++), Status.WAIT_FOR_1.controlByte);
+                        lastProcessedControl = receivedControl;
+
+
+                    } else {
+
+                        IO.println("Duplikat erkannt (Bit " + ((receivedControl == 0) ? "0" : "1") + "). Sende ACK erneut.");
+
+                        if(dataPointer > 0) {
+                            sendNext(socket, sendPacket, answerString.charAt(dataPointer - 1), receivedControl);
+                        } else {
+                            sendNext(socket, sendPacket, (char) 0, receivedControl);
                         }
-                        state = Status.WAIT_FOR_0;
                     }
                 } catch (IOException e) {
-                    IO.println("Timeout oder Abbruch");
+                    IO.println("Timeout!");
                 }
             }
         }
