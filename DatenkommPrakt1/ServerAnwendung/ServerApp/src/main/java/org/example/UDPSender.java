@@ -8,7 +8,7 @@ public class UDPSender {
 
     private static final int SERVER_PORT = 3887;
     private static final int CLIENT_PORT = 1338;
-    private static final int TIMEOUT = 10000;
+    private static final int TIMEOUT = 500;
 
     public static void sendSocket() throws IOException{
         Status state = Status.INIT_STAT;
