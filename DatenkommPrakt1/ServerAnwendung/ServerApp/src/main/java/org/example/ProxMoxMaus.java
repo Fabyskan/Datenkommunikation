@@ -29,10 +29,16 @@ public class ProxMoxMaus {
 
     private static void weiterschicken(DatagramSocket listenSocket, InetAddress targetAddr, int targetPort, String direction) {
         try {
-            byte[] buffer = new byte[2];
+
             while (true) {
+                byte[] buffer = new byte[2];
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                 listenSocket.receive(packet);
+
+                if (dropAllowed && Math.random() < 0.20) {
+                    IO.println("PROXY SAGT NEIN: " + direction + " -> [" + character + " | Bit " + bit + "]");
+                    continue;
+                }
 
                 IO.println(direction + ": '" + (char)buffer[0] + "' mit Byte " + String.format("%02X", buffer[1]));
 

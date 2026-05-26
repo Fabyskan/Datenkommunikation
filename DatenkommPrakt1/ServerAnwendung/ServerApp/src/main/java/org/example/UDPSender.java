@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketTimeoutException;
 
 public class UDPSender {
 
@@ -53,10 +54,12 @@ public class UDPSender {
                             finished = true;
                         }
                     }
-                } catch (IOException e) {
-                    IO.println("Timeout oder Abbruch");
+                } catch (SocketTimeoutException e) {
+                    IO.println("Timeout! Server antwortet nicht. Resending für Zustand: " + state);
+                    socket.send(sendPacket);
                 }
             }
+            IO.println("Übertragung erfolgreich.");
         }
     }
 
