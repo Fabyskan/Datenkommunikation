@@ -8,7 +8,7 @@ public class TCPLoop {
 
         private static final int PORT = 1337;
 
-        public static void main(String[] args) {
+        static void main() {
             System.out.println("Server startet auf Port " + PORT + "...");
 
             try (ServerSocket serverSocket = new ServerSocket(PORT)) {
@@ -20,26 +20,25 @@ public class TCPLoop {
                         System.out.println("Client verbunden: " + clientSocket.getRemoteSocketAddress());
 
                         State currentState = State.INIT;
-                        String line;
 
+                        String line;
                         while ((line = reader.readLine()) != null) {
-                            line = line.trim(); // Sauber machen owo
                             System.out.println("Erhalten: " + line);
 
                             try {
                                 currentState = currentState.handleCommand(line, writer);
                                 System.out.println("Neuer Zustand: " + currentState);
                             } catch (IllegalArgumentException e) {
-                                System.out.println("Falscher Befehl! Schließe Verbindung.");
+                                System.out.println("Falscher Befehl! Sayonara!");
                                 break;
                             }
                         }
                     } catch (Exception e) {
-                        System.out.println("Verbindung mit Client beendet/abgebrochen.");
+                        System.out.println("Verbindung mit Client abgeschossen.");
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("Port ist blockiert!");
             }
         }
 }

@@ -3,7 +3,10 @@ import java.io.BufferedWriter;
 
 public enum State {
 
-    INIT, SLEFT, SRIGHT, SFINAL;
+    INIT,
+    SLEFT,
+    SRIGHT,
+    SFINAL;
 
     public State handleCommand(String command, BufferedWriter writer) throws Exception {
         switch (this) {
@@ -15,7 +18,7 @@ public enum State {
                     send(writer, "Went Right.");
                     return SRIGHT;
                 } else {
-                    send(writer, "Err: Init");
+                    send(writer, "Ne du, wir sind in Init");
                     throw new IllegalArgumentException("Falscher Befehl für Zustand " + this);
                 }
 
@@ -25,17 +28,17 @@ public enum State {
                     send(writer, "Final State reached.");
                     return SFINAL;
                 } else {
-                    send(writer, "Err: SLeft");
+                    send(writer, "Ne du, wir sind in SLeft");
                     throw new IllegalArgumentException("Falscher Befehl für Zustand " + this);
                 }
 
             case SRIGHT:
                 if ("GoOn2!".equals(command)) {
                     send(writer, "WentOn2.");
-                    send(writer, "Final State reached.");
+                    send(writer, "Ende der Eisenbahn.");
                     return SFINAL;
                 } else {
-                    send(writer, "Err: SRight");
+                    send(writer, "Ne du, wir sind in SRight");
                     throw new IllegalArgumentException("Falscher Befehl für Zustand " + this);
                 }
 
@@ -47,11 +50,11 @@ public enum State {
                     send(writer, "DidOnceMore.");
                     return SLEFT;
                 } else {
-                    send(writer, "Err: Sfinal");
+                    send(writer, "Ne du, wir sind in Sfinal");
                     throw new IllegalArgumentException("Falscher Befehl für Zustand " + this);
                 }
         }
-        throw new IllegalArgumentException("Unbekannter Zustand");
+        throw new IllegalArgumentException("Unbekannter Zustand. Buh!");
     }
 
     private void send(BufferedWriter writer, String message) throws Exception {
