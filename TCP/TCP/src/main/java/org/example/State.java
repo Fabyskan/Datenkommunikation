@@ -5,8 +5,6 @@ public enum State {
 
     INIT, SLEFT, SRIGHT, SFINAL;
 
-    // Diese Methode prüft den Befehl und gibt den nächsten Zustand zurück.
-    // Wenn der Befehl ungültig ist, werfen wir eine Exception (führt zum Verbindungsabbruch).
     public State handleCommand(String command, BufferedWriter writer) throws Exception {
         switch (this) {
             case INIT:
@@ -16,36 +14,48 @@ public enum State {
                 } else if ("Right!".equals(command)) {
                     send(writer, "Went Right.");
                     return SRIGHT;
+                } else {
+                    send(writer, "Err: Init");
+                    throw new IllegalArgumentException("Falscher Befehl für Zustand " + this);
                 }
-                break;
+
             case SLEFT:
-                if ("OnceMore!".equals(command)) {
-                    send(writer, "DidOnceMore.");
-                    return SLEFT;
-                } else if ("GoOn1!".equals(command)) {
+                if ("GoOn1!".equals(command)) {
                     send(writer, "WentOn1.");
+                    send(writer, "Final State reached.");
                     return SFINAL;
+                } else {
+                    send(writer, "Err: SLeft");
+                    throw new IllegalArgumentException("Falscher Befehl für Zustand " + this);
                 }
-                break;
+
             case SRIGHT:
                 if ("GoOn2!".equals(command)) {
                     send(writer, "WentOn2.");
+                    send(writer, "Final State reached.");
                     return SFINAL;
+                } else {
+                    send(writer, "Err: SRight");
+                    throw new IllegalArgumentException("Falscher Befehl für Zustand " + this);
                 }
-                break;
+
             case SFINAL:
                 if ("Back!".equals(command)) {
                     send(writer, "Went Back.");
                     return INIT;
+                } else if ("OnceMore!".equals(command)) {
+                    send(writer, "DidOnceMore.");
+                    return SLEFT;
+                } else {
+                    send(writer, "Err: Sfinal");
+                    throw new IllegalArgumentException("Falscher Befehl für Zustand " + this);
                 }
-                break;
         }
-        // Befehl passt nicht zum aktuellen Zustand!
-        throw new IllegalArgumentException("Ungültiger Befehl für Zustand " + this);
+        throw new IllegalArgumentException("Unbekannter Zustand");
     }
 
     private void send(BufferedWriter writer, String message) throws Exception {
-        writer.write(message + "\n"); // Wichtig: laut PDF mit '\n' trennen!
+        writer.write(message + "\n");
         writer.flush();
     }
 }

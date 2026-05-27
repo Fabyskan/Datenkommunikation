@@ -8,7 +8,7 @@ public class UDPReceiver {
 
     private static final int SERVER_PORT = 1337;
     private static final int CLIENT_PORT = 3888;
-    private static final int TIMEOUT = 10000;
+    private static final int TIMEOUT = 50000;
 
     public static void receiveSocket() throws IOException {
         byte lastProcessedControl = (byte) 0x01;
@@ -60,4 +60,3 @@ public class UDPReceiver {
         socket.send(packet);
     }
 }
-//ss -lun
