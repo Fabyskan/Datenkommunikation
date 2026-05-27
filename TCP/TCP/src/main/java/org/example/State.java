@@ -8,13 +8,13 @@ public enum State {
     SRIGHT,
     SFINAL;
 
-    public State handleCommand(String command, BufferedWriter writer) throws Exception {
+    public State befehlsAnnahme(String befehl, BufferedWriter writer) throws Exception {
         switch (this) {
             case INIT:
-                if ("Left!".equals(command)) {
+                if ("Left!".equals(befehl)) {
                     send(writer, "Went Left.");
                     return SLEFT;
-                } else if ("Right!".equals(command)) {
+                } else if ("Right!".equals(befehl)) {
                     send(writer, "Went Right.");
                     return SRIGHT;
                 } else {
@@ -23,9 +23,9 @@ public enum State {
                 }
 
             case SLEFT:
-                if ("GoOn1!".equals(command)) {
+                if ("GoOn1!".equals(befehl)) {
                     send(writer, "WentOn1.");
-                    send(writer, "Final State reached.");
+                    send(writer, "Ende der Eisenbahn.");
                     return SFINAL;
                 } else {
                     send(writer, "Ne du, wir sind in SLeft");
@@ -33,7 +33,7 @@ public enum State {
                 }
 
             case SRIGHT:
-                if ("GoOn2!".equals(command)) {
+                if ("GoOn2!".equals(befehl)) {
                     send(writer, "WentOn2.");
                     send(writer, "Ende der Eisenbahn.");
                     return SFINAL;
@@ -43,10 +43,10 @@ public enum State {
                 }
 
             case SFINAL:
-                if ("Back!".equals(command)) {
+                if ("Back!".equals(befehl)) {
                     send(writer, "Went Back.");
                     return INIT;
-                } else if ("OnceMore!".equals(command)) {
+                } else if ("OnceMore!".equals(befehl)) {
                     send(writer, "DidOnceMore.");
                     return SLEFT;
                 } else {

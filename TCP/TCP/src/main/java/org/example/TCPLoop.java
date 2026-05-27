@@ -26,7 +26,7 @@ public class TCPLoop {
                             System.out.println("Erhalten: " + line);
 
                             try {
-                                currentState = currentState.handleCommand(line, writer);
+                                currentState = currentState.befehlsAnnahme(line, writer);
                                 System.out.println("Neuer Zustand: " + currentState);
                             } catch (IllegalArgumentException e) {
                                 System.out.println("Falscher Befehl! Sayonara!");
