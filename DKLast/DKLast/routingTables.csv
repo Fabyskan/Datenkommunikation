@@ -1,0 +1,194 @@
+A
+A,0       ,A 
+B,1       ,B 
+C,INFINITY,- 
+D,INFINITY,- 
+E,INFINITY,- 
+F,4       ,F 
+G,5       ,G 
+H,INFINITY,- 
+I,INFINITY,- 
+J,INFINITY,- 
+K,INFINITY,- 
+L,INFINITY,- 
+M,INFINITY,- 
+
+B
+A,1       ,A 
+B,0       ,B 
+C,1       ,C
+D,2       ,D 
+E,4       ,E 
+F,INFINITY,- 
+G,INFINITY,- 
+H,INFINITY,- 
+I,INFINITY,- 
+J,INFINITY,- 
+K,INFINITY,- 
+L,INFINITY,- 
+M,INFINITY,- 
+
+C
+A,INFINITY,- 
+B,1       ,B 
+C,0       ,C 
+D,INFINITY,- 
+E,1       ,E 
+F,INFINITY,- 
+G,INFINITY,- 
+H,INFINITY,- 
+I,INFINITY,- 
+J,INFINITY,- 
+K,INFINITY,- 
+L,INFINITY,- 
+M,INFINITY,- 
+
+D
+A,INFINITY,- 
+B,2       ,B 
+C,INFINITY,- 
+D,0       ,D 
+E,1       ,E 
+F,3       ,F 
+G,INFINITY,- 
+H,INFINITY,- 
+I,INFINITY,- 
+J,INFINITY,- 
+K,INFINITY,- 
+L,INFINITY,- 
+M,INFINITY,- 
+
+E
+A,INFINITY,- 
+B,4       ,B 
+C,1       ,C 
+D,1       ,D 
+E,0       ,E 
+F,INFINITY,- 
+G,1       ,G 
+H,INFINITY,- 
+I,INFINITY,- 
+J,INFINITY,- 
+K,INFINITY,- 
+L,4       ,L 
+M,INFINITY,- 
+
+F
+A,4       ,A 
+B,INFINITY,- 
+C,INFINITY,- 
+D,3       ,D 
+E,INFINITY,- 
+F,0       ,F 
+G,INFINITY,- 
+H,INFINITY,- 
+I,INFINITY,- 
+J,INFINITY,- 
+K,INFINITY,- 
+L,6       ,L 
+M,INFINITY,- 
+
+G
+A,5       ,A 
+B,INFINITY,- 
+C,INFINITY,- 
+D,INFINITY,- 
+E,1       ,E 
+F,INFINITY,- 
+G,0       ,G 
+H,3       ,H 
+I,INFINITY,- 
+J,7       ,J 
+K,INFINITY,- 
+L,6       ,L 
+M,INFINITY,- 
+
+H
+A,INFINITY,- 
+B,INFINITY,- 
+C,INFINITY,- 
+D,INFINITY,- 
+E,INFINITY,- 
+F,INFINITY,- 
+G,3       ,G 
+H,0       ,H 
+I,2       ,I 
+J,INFINITY,- 
+K,INFINITY,- 
+L,INFINITY,- 
+M,INFINITY,- 
+
+I
+A,INFINITY,- 
+B,INFINITY,- 
+C,INFINITY,- 
+D,INFINITY,- 
+E,INFINITY,- 
+F,INFINITY,- 
+G,INFINITY,- 
+H,2       ,H 
+I,0       ,I 
+J,INFINITY,- 
+K,3       ,K 
+L,INFINITY,- 
+M,INFINITY,- 
+
+J
+A,INFINITY,- 
+B,INFINITY,- 
+C,INFINITY,- 
+D,INFINITY,- 
+E,INFINITY,- 
+F,INFINITY,- 
+G,7       ,G 
+H,INFINITY,- 
+I,INFINITY,- 
+J,0       ,J 
+K,1       ,K 
+L,1       ,L 
+M,4       ,M 
+
+K
+A,INFINITY,- 
+B,INFINITY,- 
+C,INFINITY,- 
+D,INFINITY,- 
+E,INFINITY,- 
+F,INFINITY,- 
+G,INFINITY,- 
+H,INFINITY,- 
+I,3       ,I 
+J,1       ,J 
+K,0       ,K 
+L,INFINITY,- 
+M,INFINITY,- 
+
+L
+A,INFINITY,- 
+B,INFINITY,- 
+C,INFINITY,- 
+D,INFINITY,- 
+E,4       ,E 
+F,6       ,F 
+G,6       ,G 
+H,INFINITY,- 
+I,INFINITY,- 
+J,1       ,J 
+K,INFINITY,- 
+L,0       ,L 
+M,1       ,M 
+
+M
+A,INFINITY,- 
+B,INFINITY,- 
+C,INFINITY,- 
+D,INFINITY,- 
+E,INFINITY,- 
+F,INFINITY,- 
+G,INFINITY,- 
+H,INFINITY,- 
+I,INFINITY,- 
+J,4       ,J 
+K,INFINITY,- 
+L,1       ,L 
+M,0       ,M 
