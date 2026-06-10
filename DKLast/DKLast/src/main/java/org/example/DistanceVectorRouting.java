@@ -7,10 +7,9 @@ import java.util.*;
 
 public class DistanceVectorRouting {
 
-    // Definition für INFINITY laut PDF-Vorgabe
-    public static final int INFINITY = 999;
+    public static final int INFINITY = 1337; // Groß genug aber kein Überläufchen
 
-    // 1. Repräsentiert eine Zeile in der Routing-Tabelle
+    // ZIEL | DISTANZ | NÄCHSTER ROUTER -> Ein Entry = Eine Zeile der Tabelle
     static class RoutingEntry {
         String destination;
         int distance;
@@ -27,32 +26,35 @@ public class DistanceVectorRouting {
         }
     }
 
-    // 2. Repräsentiert einen Router im Netzwerk
+    // Nodes bzw die router
     static class Router {
         String name;
-        List<String> neighbors = new ArrayList<>();
-        Map<String, RoutingEntry> table = new HashMap<>();
+        List<String> neighbours = new ArrayList<>();
+        Map<String, RoutingEntry> table = new HashMap<>(); //Routingtabelle
 
         public Router(String name) {
             this.name = name;
         }
 
-        public void findNeighbors() {
+        public void findNeighbours() {
             for (var entry : table.values()) {
-                if (!entry.destination.equals(name)
-                        && entry.distance != INFINITY
-                        && !entry.nextHop.equals("-")) {
-                    neighbors.add(entry.destination);
+                if (!entry.destination.equals(name) // Nicht mein eigener Nachbar
+                        && entry.distance != INFINITY //Nicht unendlich weit entfernt
+                        && !entry.nextHop.equals("-")) { // Es gibt einen gültigen SChritt
+                    neighbours.add(entry.destination);
                 }
             }
         }
     }
 
-    // 3. Der Bellman-Ford Algorithmus für eine einzelne Runde
+    // Bellman-Ford bzw der Lernalgo
     public static boolean runRoutingRound(Map<String, Router> network) {
         boolean anyChange = false;
 
-        // Snapshot der Vorrunde erstellen
+        /*
+        * Snapshot, damit die runden einmal sauber abgespielt werden und nicht nahc jeder Zeile
+        * mit den geupdateten Werten weiter gearbeitet wird
+         */
         Map<String, Map<String, RoutingEntry>> snapshot = new HashMap<>();
         for (String routerName : network.keySet()) {
             Map<String, RoutingEntry> clonedTable = new HashMap<>();
@@ -63,32 +65,43 @@ public class DistanceVectorRouting {
         }
 
         // Jeder Router lernt von seinen Nachbarn
-        for (Router router : network.values()) {
-            for (String neighborName : router.neighbors) {
+        for (Router router : network.values()) { // aktueller Router
+            for (String neighbourName : router.neighbours) { // Nachbar Router (FindNeighbours
 
-                if (!snapshot.containsKey(neighborName)) continue;
+                if (!snapshot.containsKey(neighbourName)) continue;
 
-                // Kosten zum Nachbarn holen wir uns direkt aus der Tabelle der Vorrunde
-                int costToNeighbor = snapshot.get(router.name).get(neighborName).distance;
-                if (costToNeighbor == INFINITY) continue;
+                /*
+                 * Kostenablgeich mit dem Snapshot der Vorrunde
+                 */
+                int costToNeighbour = snapshot.get(router.name).get(neighbourName).distance;
+                if (costToNeighbour == INFINITY) continue;
 
-                Map<String, RoutingEntry> neighborTable = snapshot.get(neighborName);
 
-                for (String dest : neighborTable.keySet()) {
-                    if (neighborTable.get(dest) == null) continue;
+                /*
+                * Ein Router geht seine Nachbarn durch - holt sich die Infos aus dem snapshot
+                 */
+                Map<String, RoutingEntry> neighbourTable = snapshot.get(neighbourName);
 
-                    int distanceFromNeighborToDest = neighborTable.get(dest).distance;
+                for (String dest : neighbourTable.keySet()) {
+                    if (neighbourTable.get(dest) == null) continue;
 
-                    if (distanceFromNeighborToDest != INFINITY) {
-                        int newPotentialCost = costToNeighbor + distanceFromNeighborToDest;
+                    int distanceFromNeighbourToDest = neighbourTable.get(dest).distance;
 
+
+                    /*
+                    * Berechnung der Kosten aus Distanz zum nachbar und der distanz zum ziel
+                     */
+                    if (distanceFromNeighbourToDest != INFINITY) {
+                        int newPotentialCost = costToNeighbour + distanceFromNeighbourToDest;
+
+                        /*
+                        * Check, ob es einen besseren weg gibt, wenn ja neue Runde anfordern
+                         */
                         RoutingEntry currentEntry = router.table.get(dest);
                         if (currentEntry != null) {
-                            // ENTSCHEIDENDE KORREKTUR:
-                            // Wir updaten, wenn der alte Weg INFINITY war ODER der neue Weg echt kürzer ist!
                             if (currentEntry.distance == INFINITY || newPotentialCost < currentEntry.distance) {
                                 currentEntry.distance = newPotentialCost;
-                                currentEntry.nextHop = neighborName;
+                                currentEntry.nextHop = neighbourName;
                                 anyChange = true;
                             }
                         }
@@ -99,11 +112,11 @@ public class DistanceVectorRouting {
         return anyChange;
     }
 
-    // 4. Hilfsmethode zur formatierten Ausgabe
-    public static void printNetworkTables(Map<String, Router> network) {
+
+    public static void printTables(Map<String, Router> network) {
         for (Router router : network.values()) {
             System.out.println("Tabelle für Router " + router.name + ":");
-            System.out.println("Ziel | Distanz | Next Hop");
+            System.out.println("Ziel | Distanz | Nächster Router");
             System.out.println("-------------------------");
 
             List<String> destinations = new ArrayList<>(router.table.keySet());
@@ -118,12 +131,14 @@ public class DistanceVectorRouting {
         }
     }
 
-    // 5. Hauptmethode
+
     public static void main(String[] args) {
+
+        /*
+        * Auslesen der CSV mit wirklich gottlosen Kopfschmerzen warum ist das so
+        * */
         Map<String, Router> network = new TreeMap<>();
         String csvPath = "routingTables.csv";
-
-        System.out.println("Lese initiale Routingtabellen aus " + csvPath + " ein...");
 
         try (BufferedReader br = new BufferedReader(new FileReader(csvPath))) {
             String line;
@@ -172,23 +187,33 @@ public class DistanceVectorRouting {
             return;
         }
 
+        /*
+        * Nachbarsuche starten
+        * */
         for (Router r : network.values()) {
-            r.findNeighbors();
+            r.findNeighbours();
         }
 
+        /*
+        *  Initialprint
+         */
         System.out.println("\n=== INITIALE TABELLEN ===");
-        printNetworkTables(network);
+        printTables(network);
 
         int round = 1;
         boolean changed = true;
 
+
+        /*
+        *  Hauptsteuerung für BelloBello
+         */
         while (changed) {
             changed = runRoutingRound(network);
 
             System.out.println("=========================");
             System.out.println("=== ENDE RUNDE " + round + " ===");
             System.out.println("=========================");
-            printNetworkTables(network);
+            printTables(network);
 
             if (changed) {
                 round++;
@@ -199,11 +224,6 @@ public class DistanceVectorRouting {
         System.out.println("Das System ist nach " + round + " Runden stabil.");
         System.out.println("==================================================");
 
-        if (network.containsKey("A") && network.get("A").table.containsKey("M")) {
-            System.out.println("Kürzeste Distanz von A nach M: " + network.get("A").table.get("M").distance + " (Soll: 8)");
-        }
-        if (network.containsKey("F") && network.get("F").table.containsKey("I")) {
-            System.out.println("Kürzeste Distanz von F nach I: " + network.get("F").table.get("I").distance + " (Soll: 10)");
-        }
+
     }
 }
